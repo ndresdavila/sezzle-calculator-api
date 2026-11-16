@@ -1,0 +1,58 @@
+package domain
+
+import (
+	"strings"
+
+	"github.com/shopspring/decimal"
+)
+
+const (
+	// resultScale is the number of decimal places kept on a finished result.
+	resultScale = 12
+	// maxMagnitude rejects results whose order of magnitude cannot fit a calculator display.
+	maxMagnitude    int32 = 60
+	maxNumberLength       = 100
+)
+
+func init() {
+	// High intermediate precision lets identities such as (1/3)*3 snap back to 1.
+	decimal.DivisionPrecision = 34
+}
+
+// ParseDecimal accepts a plain or scientific decimal string.
+func ParseDecimal(raw string) (decimal.Decimal, error) {
+	value := strings.TrimSpace(raw)
+	if value == "" || len(value) > maxNumberLength {
+		return decimal.Zero, ErrInvalidNumber
+	}
+	parsed, err := decimal.NewFromString(value)
+	if err != nil {
+		return decimal.Zero, ErrInvalidNumber
+	}
+	return parsed, nil
+}
+
+// Normalize rounds a finished result and snaps values that are a rounding
+// error away from an integer, so (1/3)*3 is "1" and 0.1+0.2 is "0.3".
+func Normalize(value decimal.Decimal) (decimal.Decimal, error) {
+	if overflows(value) {
+		return decimal.Zero, ErrOverflow
+	}
+	rounded := value.Round(resultScale)
+	nearest := rounded.Round(0)
+	if rounded.Sub(nearest).Abs().LessThan(decimal.New(1, -9)) {
+		rounded = nearest
+	}
+	if overflows(rounded) {
+		return decimal.Zero, ErrOverflow
+	}
+	return rounded, nil
+}
+
+func overflows(value decimal.Decimal) bool {
+	if value.IsZero() {
+		return false
+	}
+	order := int32(value.NumDigits()) + value.Exponent()
+	return order > maxMagnitude || order < -maxMagnitude
+}
