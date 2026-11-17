@@ -63,6 +63,8 @@ func TestApplyRejectsBadInput(t *testing.T) {
 		{name: "zero to zero", op: OpPower, operands: []string{"0", "0"}, code: CodeInvalidPower},
 		{name: "negative fractional power", op: OpPower, operands: []string{"-2", "0.5"}, code: CodeInvalidPower},
 		{name: "huge exponent", op: OpPower, operands: []string{"2", "999"}, code: CodeOverflow},
+		{name: "huge negative exponent", op: OpPower, operands: []string{"2", "-999"}, code: CodeUnderflow},
+		{name: "negative base huge exponent", op: OpPower, operands: []string{"-2", "999"}, code: CodeOverflow},
 		{name: "wrong arity", op: OpAdd, operands: []string{"1"}, code: CodeInvalidOperandCount},
 		{name: "unknown", op: "mod", operands: []string{"1", "2"}, code: CodeUnknownOperation},
 	}

@@ -140,6 +140,9 @@ func squareRoot(value decimal.Decimal) (decimal.Decimal, error) {
 
 func raise(base, exponent decimal.Decimal) (decimal.Decimal, error) {
 	if exponent.Abs().GreaterThan(decimal.NewFromInt(256)) {
+		if exponent.IsNegative() {
+			return decimal.Zero, ErrUnderflow
+		}
 		return decimal.Zero, ErrOverflow
 	}
 	if base.IsZero() && exponent.IsZero() {

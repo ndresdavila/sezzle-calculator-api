@@ -35,24 +35,32 @@ func ParseDecimal(raw string) (decimal.Decimal, error) {
 // Normalize rounds a finished result and snaps values that are a rounding
 // error away from an integer, so (1/3)*3 is "1" and 0.1+0.2 is "0.3".
 func Normalize(value decimal.Decimal) (decimal.Decimal, error) {
-	if overflows(value) {
-		return decimal.Zero, ErrOverflow
+	if err := magnitudeError(value); err != nil {
+		return decimal.Zero, err
 	}
 	rounded := value.Round(resultScale)
 	nearest := rounded.Round(0)
 	if rounded.Sub(nearest).Abs().LessThan(decimal.New(1, -9)) {
 		rounded = nearest
 	}
-	if overflows(rounded) {
-		return decimal.Zero, ErrOverflow
+	if err := magnitudeError(rounded); err != nil {
+		return decimal.Zero, err
 	}
 	return rounded, nil
 }
 
-func overflows(value decimal.Decimal) bool {
+// magnitudeError rejects values whose size cannot fit the calculator.
+// Sign does not matter: a huge negative is overflow, a tiny negative is underflow.
+func magnitudeError(value decimal.Decimal) error {
 	if value.IsZero() {
-		return false
+		return nil
 	}
 	order := int32(value.NumDigits()) + value.Exponent()
-	return order > maxMagnitude || order < -maxMagnitude
+	if order > maxMagnitude {
+		return ErrOverflow
+	}
+	if order < -maxMagnitude {
+		return ErrUnderflow
+	}
+	return nil
 }

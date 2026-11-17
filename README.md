@@ -62,6 +62,6 @@ To run the UI and this API together, use the compose file in the web repository.
 - Money-safe decimals (`shopspring/decimal`), so `0.1 + 0.2` is `0.3`.
 - Results are JSON strings. JSON numbers are accepted on input, but they are read from the raw literal so they are not parsed as floats first.
 - `200+10%` means 220. A bare `50%` means 0.5. Parentheses force the percent to resolve immediately.
-- Division by zero, a negative square root, and an undefined power return `422` with a stable `error.code`.
+- Division by zero, a negative square root, an undefined power, overflow, and underflow return `422` with a stable `error.code`. Overflow is a result that is too large. Underflow is a result that is too close to zero. Both apply to positive and negative values.
 
 Details are in [docs/design-decisions.md](docs/design-decisions.md) and [docs/api.md](docs/api.md).

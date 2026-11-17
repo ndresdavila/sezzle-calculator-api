@@ -89,6 +89,10 @@ func TestEvaluateErrors(t *testing.T) {
 		{expression: "sqrt(-1)", code: CodeNegativeSqrt},
 		{expression: "0^0", code: CodeInvalidPower},
 		{expression: "(-2)^0.5", code: CodeInvalidPower},
+		{expression: "10^70", code: CodeOverflow},
+		{expression: "(-10)^70", code: CodeOverflow},
+		{expression: "10^-70", code: CodeUnderflow},
+		{expression: "(-10)^-70", code: CodeUnderflow},
 	}
 
 	for _, tc := range cases {

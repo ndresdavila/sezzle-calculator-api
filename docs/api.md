@@ -107,7 +107,8 @@ Whitespace is ignored. The expression may be at most 500 characters.
 | 422 | `DIVISION_BY_ZERO` | Divisor is zero, including `10/0%` |
 | 422 | `NEGATIVE_SQRT` | Square root of a negative number |
 | 422 | `INVALID_POWER` | `0^0`, or a negative base with a fractional exponent |
-| 422 | `OVERFLOW` | Exponent or result is outside the calculator range |
+| 422 | `OVERFLOW` | The result is too large, positive or negative |
+| 422 | `UNDERFLOW` | The result is too close to zero, positive or negative |
 | 408 | `TIMEOUT` | The request context is already canceled |
 
 Unknown fields are rejected so a typo such as `"expresion"` fails loudly.

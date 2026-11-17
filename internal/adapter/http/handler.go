@@ -144,7 +144,7 @@ func writeDomainError(w http.ResponseWriter, err error) {
 
 func statusFor(code string) int {
 	switch code {
-	case domain.CodeDivisionByZero, domain.CodeNegativeSqrt, domain.CodeInvalidPower, domain.CodeOverflow:
+	case domain.CodeDivisionByZero, domain.CodeNegativeSqrt, domain.CodeInvalidPower, domain.CodeOverflow, domain.CodeUnderflow:
 		return http.StatusUnprocessableEntity
 	default:
 		return http.StatusBadRequest

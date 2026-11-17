@@ -16,6 +16,7 @@ const (
 	CodeNegativeSqrt        = "NEGATIVE_SQRT"
 	CodeInvalidPower        = "INVALID_POWER"
 	CodeOverflow            = "OVERFLOW"
+	CodeUnderflow           = "UNDERFLOW"
 	CodeInvalidExpression   = "INVALID_EXPRESSION"
 	CodeInvalidNumber       = "INVALID_NUMBER"
 	CodeInvalidOperandCount = "INVALID_OPERAND_COUNT"
@@ -30,6 +31,7 @@ var (
 	ErrZeroPower           = &Error{Code: CodeInvalidPower, Message: "Zero cannot be raised to the power of zero"}
 	ErrNegativePower       = &Error{Code: CodeInvalidPower, Message: "A negative number cannot be raised to a fractional power"}
 	ErrOverflow            = &Error{Code: CodeOverflow, Message: "The result is too large to represent"}
+	ErrUnderflow           = &Error{Code: CodeUnderflow, Message: "The result is too small to represent"}
 	ErrInvalidExpression   = &Error{Code: CodeInvalidExpression, Message: "The expression is invalid"}
 	ErrInvalidNumber       = &Error{Code: CodeInvalidNumber, Message: "One of the numbers is invalid"}
 	ErrInvalidOperandCount = &Error{Code: CodeInvalidOperandCount, Message: "Wrong number of operands for this operation"}

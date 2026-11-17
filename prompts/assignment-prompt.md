@@ -29,7 +29,8 @@ A reviewer can clone the repository, run `make test`, start the server, and eval
 - `POST /api/v1/evaluate` runs an expression with precedence, parentheses, postfix `%`, and `sqrt()`.
 - `GET /api/v1/operations` lists the registry.
 - `GET /health` returns `{"status":"ok"}`.
-- Reject division by zero, negative square roots, undefined powers, malformed JSON, unknown fields, unknown operations, and the wrong number of operands.
+- Reject division by zero, negative square roots, undefined powers, overflow, underflow, malformed JSON, unknown fields, unknown operations, and the wrong number of operands.
+- Overflow means the result is too large, positive or negative. Underflow means it is too close to zero, positive or negative.
 - Return every numeric result as a decimal string.
 
 ### Non-functional
@@ -66,7 +67,7 @@ A new binary operation is one registry entry with a name, an arity, a descriptio
 
 ## Testing
 
-- Table tests for operations and expressions, including the reference total 2122.
+- Table tests for operations and expressions, including the reference total 2122, overflow, and underflow for both signs.
 - HTTP tests with `httptest` and the real service, not a fake calculator.
 - Assert error codes, not only messages.
 - Provide `make test` and `make cover`.

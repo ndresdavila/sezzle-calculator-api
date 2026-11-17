@@ -26,7 +26,7 @@ The reference keypad has a percent key, so the expression language uses the rule
 
 Integer powers use the decimal library's exact path. Fractional powers are rounded to 16 places and then normalized. A negative base with a fractional exponent is rejected rather than returning a complex number. Square root uses Newton iteration in decimal, so `sqrt(2)` is not a binary float.
 
-The exponent is capped at 256 and the result magnitude at 60 digits. Those limits keep a public endpoint from building a gigantic coefficient.
+The exponent is capped at 256 and the result magnitude at 60 digits. A value past that size, positive or negative, is `OVERFLOW`. A non-zero value closer to zero than that, positive or negative, is `UNDERFLOW`. A huge negative exponent such as `2^-999` is underflow, not a giant fraction. Those limits keep a public endpoint from building a gigantic coefficient.
 
 ## Errors are codes
 

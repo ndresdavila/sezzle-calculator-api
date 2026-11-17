@@ -38,7 +38,7 @@ func TestAPI(t *testing.T) {
 		for _, operation := range body.Operations {
 			names[operation.Name] = true
 		}
-		for _, name := range []string{"add", "subtract", "multiply", "divide", "power", "sqrt"} {
+		for _, name := range []string{"add", "subtract", "multiply", "divide", "power", "sqrt", "percent", "negate"} {
 			if !names[name] {
 				t.Fatalf("missing %s in %#v", name, body.Operations)
 			}
@@ -73,6 +73,16 @@ func TestAPI(t *testing.T) {
 		if response.Code != http.StatusOK || body.Result != "2122" {
 			t.Fatalf("status %d body %#v", response.Code, body)
 		}
+	})
+
+	t.Run("overflow", func(t *testing.T) {
+		response := perform(router, http.MethodPost, "/api/v1/evaluate", `{"expression":"10^70"}`)
+		assertError(t, response, http.StatusUnprocessableEntity, domain.CodeOverflow)
+	})
+
+	t.Run("underflow", func(t *testing.T) {
+		response := perform(router, http.MethodPost, "/api/v1/evaluate", `{"expression":"(-10)^-70"}`)
+		assertError(t, response, http.StatusUnprocessableEntity, domain.CodeUnderflow)
 	})
 
 	t.Run("division by zero", func(t *testing.T) {
